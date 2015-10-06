@@ -245,7 +245,7 @@ function initGeometry(features) {
     }
 
     // Get the svg path for each feature of geometry
-    var contour = transformSVGPath(geo.path(feature));
+    var contour = transformSVGPath(path(feature));
 
     // Get county data from counties dataset based on id key
     var county = counties.get(feature.id);

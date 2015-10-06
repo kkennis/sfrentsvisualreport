@@ -1,9 +1,10 @@
 
 // Set up variables to be used in data layer
-var MAX_EXTRUSION = 10;
+var MAX_EXTRUSION = 5;
 
 var months = [];
 var currentMonth;
+var boundingBox;
 
 var zips = d3.map();
 
@@ -124,7 +125,7 @@ loadData(dataSources, function(results) {
   var maxRent = prepareRentData(results.sfrents);
 
   // Calculate extrusion and color scales based off range upper bounded by max rent
-  getExtrusion = d3.scale.linear().domain([0, maxRent]).range([0, MAX_EXTRUSION]);
+  getExtrusion = d3.scale.linear().domain([0, maxRent]).range([0, 4]);
   getColor = d3.scale.linear().domain([0, maxRent]);
 
 
@@ -201,22 +202,39 @@ function initThree() {
   // Create a new scene - the stuff of THREE itself
   scene = new THREE.Scene();
 
+  initPositioningTransform();
+
   // Lights, camera, action!
   initLights();
   initCamera();
   // TODO: After MVP, set up trackball controls.
+
 
   // Create controls for mouse dragging - camera as first argument sets
   // target for control, renderer's DOM element is target
   controls = new THREE.TrackballControls(camera, renderer.domElement);
 
   //Define maximum and minimum zoom.
-  controls.minDistance = 0;
-  controls.maxDistance = 100;
+  controls.minDistance = 5;
+  controls.maxDistance = 10;
 
   // TODO: We're up to lights and camera! Only the action remains.
-  // animate();
+  
+
+  // camera.position.z = -62;
+
+  // camera.position.x = 1432;
+  // camera.position.y = 1201;
+  // camera.position.z = -65;
+  camera.up.set(-0.3079731382492934, 0.9436692395156481, -0.12099963846565401);
+  camera.position.set(1450.2198796703588, 1198.6282599321983, -62.00884720697113);
+  // camera.rotation.set(2.753132942136272, -1.035130920564671736, -3.071904360557594);
+  camera.rotation.set(-2.602185482068017, -0.5106756660487876, -1.1309577730941562);
+
+
+
   renderer.render(scene, camera);
+  animate();
 }
 
 // The fist thing initThree does is call initRenderer, so 
@@ -245,15 +263,17 @@ function initRenderer() {
 // Before the action, we need lights and camera - let's set them up.
 
 function initCamera() {
-
+  
   // Start camera to view three scene - first arg is vertical view angle, second is aspect 
   // ratio (same as aspect of window here), and third and fourth are front and black plane z coordinates
   camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 10000);
 
-  // Set position of camera in screen
-  camera.position.set(-8.278324114488553, 23.715105536749885, 5.334970045945842);
 
   // {x: 1432, y: 1201, z: -65}
+  // {x: 1432.453078832504, y: 1198.6191709380764, z: -62.000510281529984}
+  // {x: -0.3079731382492934, y: 0.9436692395156481, z: -0.12099963846565401}
+
+  // camera.position.set(1432.2198796703588, 1195.6282599321983, -62.00884720697113);
 
   // camera.position.x = 1432;
   // camera.position.y = 1201;
@@ -261,10 +281,10 @@ function initCamera() {
 
   // camera.up.set(-0.3079731382492934, 0.9436692395156481, -0.12099963846565401);
 
-  updateMeshes("2015-02");
+  // camera.rotation.set(2.753132942136272, -0.035130920564671736, -3.071904360557594);
+  // camera.rotation.set(-2.602185482068017, -0.5106756660487876, -1.1309577730941562);
 
-  // Not sure about this one - we'll leave it in for now,
-  // and try commenting it out once we've MVPed.
+  var bb = updateMeshes("2015-08");
 
   // restoreCameraOrientation(camera);
 }
@@ -292,16 +312,24 @@ function animate() {
   // are linked to camera)
   controls.update();
 
+
   
   // Render the scene again after camera perspective changes
   renderer.render(scene, camera);
 
   // Update infobox with new information based on mouse location
-  // updateInfoBox();
+  updateInfoBox();
 
   // Do the animation with requestAnimationFrame
   requestAnimationFrame(animate); 
 
+}
+
+function onDocumentMouseMove( event ) {
+
+  // For mouse updates - translate x and y coordinates from environment x and y
+  mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+  mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
 }
 
 function initPositioningTransform() {
@@ -313,8 +341,8 @@ function initPositioningTransform() {
   var tmp = new THREE.Matrix4();
 
   // Matrix multiplication to transform positioning
-  positioning.multiply(tmp.makeRotationX(Math.PI/2));
-  positioning.multiply(tmp.makeTranslation(-480, -250, 0));
+  // positioning.multiply(tmp.makeRotationX(Math.PI/64));
+  positioning.multiply(tmp.makeTranslation(-1432.5, -1198.5, 51));
 
   // All this does it put it in a more friendly orientation.
 }
@@ -331,7 +359,7 @@ function updateMeshes(month) {
     scene.remove(mesh);
   });
 
-  
+
 
   meshes = zips.entries().map(function(entry) {
 
@@ -352,7 +380,7 @@ function updateMeshes(month) {
     // of green.
     var dataColor = getColor(rent);
 
-    var color = d3.hsl(105, 0.8, dataColor).toString();
+    var color = d3.hsl(105, dataColor, dataColor).toString();
 
     // Build material for siding (Lambert == non-reflective)
     var extrudeMaterial = new THREE.MeshLambertMaterial({color: color}); 
@@ -383,10 +411,10 @@ function updateMeshes(month) {
 
     // Associate zip code to mesh to link with data
     mesh.userData.zipCode = zipCode;
+    mesh.name = zipCode;
 
     // TODO: Implement this. First, let's see how it works without it!
-    // initPositioningTransform();
-    // mesh.applyMatrix(positioning);
+    mesh.applyMatrix(positioning);
 
     // Translate the mesh to the level of extrusion - use negative to pull extrusion "in", and 
     // the extrusion iself pulls it back out
@@ -394,13 +422,7 @@ function updateMeshes(month) {
     mesh.position.z -= 50;
     mesh.position.z -= extrusion;
 
-    var box = new THREE.Box3().setFromObject( mesh );
-    console.log( "bounding box, x", box.min, box.max, box.size() );
-
-    var geometry = new THREE.BoxGeometry( 1, 1, 1 );
-    var material = new THREE.MeshBasicMaterial( { color: 0x0f00f0, wireframe: true } );
-    var cube = new THREE.Mesh( geometry, material );
-    scene.add( cube );
+    mesh.rotateZ(0.000);
 
 
     // Add mesh to scene
@@ -411,10 +433,43 @@ function updateMeshes(month) {
 
   });
 
-  renderer.render(scene, camera);
+  return boundingBox;
 }
 
+function updateInfoBox() {
 
+  // Set a raycaster from the point of the camera to where the mouse pointing
+  raycaster.setFromCamera( mouse, camera );
+
+  // Get intersect points on the map from the raycaster
+  var intersects = raycaster.intersectObjects(scene.children);
+
+  // Initialize HTML variable to store data to display to screen
+  var html = '';
+
+  // For each intersect (most likely just one in this example), get
+  // data from the object (county code) and get correponding data
+  // for that county from dataset. Create html string displaying
+  // the county's name and population
+  // console.log("Intersects: ", intersects)
+  for (var i=0; i<intersects.length; i++) {
+    var zipCode = intersects[i].object.userData.zipCode;
+    // console.log("Zip Code", zipCode)
+    if (zipCode) {
+      var zip = zips.get(zipCode);
+      // console.log("Zip: ",zip)
+      var rent = zip.get("2015-08");
+      // console.log("Rent: ",rent) 
+      html = zipCode + ': $' + numberFormatter(parseInt(rent, 10)) + '/mo';
+      break;
+    }
+  }
+
+  // Add HTML to infobox on screen
+  document.getElementById('infobox').innerHTML = html;
+}
+
+document.addEventListener('mousemove', onDocumentMouseMove);
 // Just display the most recent meshes for now. We shall React!
 
 // TODO: Make the rest work! You're so close.
