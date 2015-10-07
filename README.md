@@ -6,7 +6,7 @@ In it, I have created a 3D map of San Francisco delineated by zip code, with the
 
 I started from [this example](http://scribu.net/blog/3d-maps-using-d3-and-three.js.html), which creates a similar map for Romania (albeit with different boundaries and metrics). Other useful d3 tutorials were found at d3 creator [Mike Bostock's](http://bost.ocks.org/mike/map/) website. 
 
-To use my app, simply clone the repo, open up sfrents.html, and pick a month (no data will appear until you do). Use mouse click-and-drag to rotate, and scroll to zoom. If you would like to contribute, I'd love to see your forks, issues, and pull requests.
+To use my app, simply clone the repo, navigate to the directory and open a server (use `http-server` or `python -m SimpleHTTPServer`). Then, in your browser, go to localhost at the port you specified (8000 by default),open up sfrents.html, and pick a month (no data will appear until you do). Use mouse click-and-drag to rotate, and scroll to zoom. If you would like to contribute, I'd love to see your forks, issues, and pull requests.
 
 Some coming TODOS:
 
