@@ -82,6 +82,7 @@ function prepareRentData(sfrents) {
   // Create variables to track highest rent and sum of rents over
   // all zip codes (to keep graphing relative)
   var maxRent = 0;
+  var minRent = 10000;
 
   // For each row in the sfrents csv
   sfrents.forEach(function(row) {
@@ -107,6 +108,10 @@ function prepareRentData(sfrents) {
       if (rentValue > maxRent) {
         maxRent = rentValue;
       }
+
+      if (rentValue < minRent) {
+        minRent = rentValue;
+      } 
     }); 
 
     // Link the zip code with the vector of rent values
@@ -115,7 +120,7 @@ function prepareRentData(sfrents) {
 
   // Return the max rent so along with our side effects, we can have the maxRent 
   // value in the loadData callback
-  return maxRent;
+  return { minRent: minRent, maxRent: maxRent} ;
 }
 
 // Now actually load the data
@@ -125,11 +130,11 @@ loadData(dataSources, function(results) {
   months = extractMonths(results.sfrents);
 
   // Get the max rent while also linking rent values to topo features
-  var maxRent = prepareRentData(results.sfrents);
+  var rents = prepareRentData(results.sfrents);
 
   // Calculate extrusion and color scales based off range upper bounded by max rent
-  getExtrusion = d3.scale.linear().domain([0, maxRent]).range([0, 4]);
-  getColor = d3.scale.linear().domain([0, maxRent]);
+  getExtrusion = d3.scale.linear().domain([rents.minRent, rents.maxRent]).range([0, MAX_EXTRUSION]);
+  getColor = d3.scale.linear().domain([rents.minRent, rents.maxRent]);
 
 
   var sfzips = results.sfzips;
@@ -382,7 +387,7 @@ function updateMeshes(month) {
     // of green.
     var dataColor = getColor(rent);
 
-    var color = d3.hsl(105, dataColor, dataColor).toString();
+    var color = d3.hsl(105, 1, dataColor).toString();
 
     // Build material for siding (Lambert == non-reflective)
     var extrudeMaterial = new THREE.MeshLambertMaterial({color: color}); 
