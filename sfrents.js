@@ -70,7 +70,7 @@ function extractMonths(sfrents) {
   // Go through keys, and filter out first column (titled zip)
   // In the end, return an array of months we have data for
   return Object.keys(sfrents[0]).filter(function(key) {
-    return key !== 'Zip';
+    return key !== 'Zip' && key !== "Name";
   }).map(function(month) {
     // Return title of month (YYYY-MM) format
     return month;
@@ -87,9 +87,11 @@ function prepareRentData(sfrents) {
 
     // Get the zip code from the csv table
     var zipCode = row.Zip;
+    var zipName = row.Name;
 
     // Create d3 datum node to fill with data
     var datum = d3.map();
+    datum.set(name, zipName);
 
     // Loop trhough individual months for each row (i.e. zipcode)
     months.forEach(function(month) {
@@ -411,7 +413,7 @@ function updateMeshes(month) {
 
     // Associate zip code to mesh to link with data
     mesh.userData.zipCode = zipCode;
-    mesh.name = zipCode;
+    mesh.name = zipData.get(name);
 
     // TODO: Implement this. First, let's see how it works without it!
     mesh.applyMatrix(positioning);
@@ -422,7 +424,6 @@ function updateMeshes(month) {
     mesh.position.z -= 50;
     mesh.position.z -= extrusion;
 
-    mesh.rotateZ(0.000);
 
 
     // Add mesh to scene
@@ -460,7 +461,7 @@ function updateInfoBox() {
       // console.log("Zip: ",zip)
       var rent = zip.get("2015-08");
       // console.log("Rent: ",rent) 
-      html = zipCode + ': $' + numberFormatter(parseInt(rent, 10)) + '/mo';
+      html = zipCode + ' (' + zip.get(name) + '): $' + numberFormatter(parseInt(rent, 10)) + '/mo';
       break;
     }
   }
