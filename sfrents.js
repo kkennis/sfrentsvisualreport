@@ -2,7 +2,7 @@
 // Set up variables to be used in data layer
 var MAX_EXTRUSION = 5;
 
-var months = [];
+months = [];
 var currentMonth;
 var boundingBox;
 
@@ -286,7 +286,6 @@ function initCamera() {
   // camera.rotation.set(2.753132942136272, -0.035130920564671736, -3.071904360557594);
   // camera.rotation.set(-2.602185482068017, -0.5106756660487876, -1.1309577730941562);
 
-  var bb = updateMeshes("2015-08");
 
   // restoreCameraOrientation(camera);
 }
@@ -433,8 +432,6 @@ function updateMeshes(month) {
     return mesh;
 
   });
-
-  return boundingBox;
 }
 
 function updateInfoBox() {
@@ -459,7 +456,7 @@ function updateInfoBox() {
     if (zipCode) {
       var zip = zips.get(zipCode);
       // console.log("Zip: ",zip)
-      var rent = zip.get("2015-08");
+      var rent = zip.get(currentMonth);
       // console.log("Rent: ",rent) 
       html = zipCode + ' (' + zip.get(name) + '): $' + numberFormatter(parseInt(rent, 10)) + '/mo';
       break;
@@ -489,4 +486,6 @@ window.addEventListener('resize', onWindowResize);
 // Just display the most recent meshes for now. We shall React!
 
 // TODO: Make the rest work! You're so close.
+
+// React Layer -- this doesn't count
 
