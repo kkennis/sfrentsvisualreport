@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+
+  * {
+    font-family: "Arial", sans-serif;
+  }
+
+  #infobox {
+    position: absolute;
+    top: 0;
+    right: 6px;
+    color: white;
+    opacity: 0.7;
+    font-size: 42px;
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+  }
+
+  .container {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+  }
+
+  canvas {
+    z-index: -5;
+  }
+
+  #page-head {
+    position: absolute;
+    width: 25%;
+    top: 1em;
+    left: 20px;
+    text-align: left;
+    color: #EEEEEE;
+  }
+
+  </style>
+  </head>
+  <body>
+  <div id="infobox"></div>
+  <div class="container">
+    <form id="current-month" method="post" action="d3.html">
+      <select id="month-select">
+      </select>
+      <input type="Submit" value="Choose Month (YYYY-MM)">
+    </form>
+  </div>
+  <h1 id="page-head">San Francisco Rents: A Visual Report</h1>
+
+  <script src="http://d3js.org/topojson.v1.min.js"></script>
+  <script src="http://d3js.org/d3.v3.min.js"></script>
+  <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+  <script src="three.min.js"></script>
+  <script src="transformsvgpath.js"></script>
+  <script src="TrackballControls.js"></script>
+  <script src="sfrents.js"></script>
+  <script src="monthbuttons.js"></script>
+  </body>
+</html>

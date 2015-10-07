@@ -62,6 +62,7 @@ function loadData(sources, callback){
     // In environment of source type (json/csv), apply the handler
     d3[source.type].apply(d3, args);
 
+
   });
 }
 
