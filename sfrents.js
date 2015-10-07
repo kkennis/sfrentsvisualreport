@@ -470,7 +470,22 @@ function updateInfoBox() {
   document.getElementById('infobox').innerHTML = html;
 }
 
+// Listener set up so camera and renderer responds to window resizing
+function onWindowResize() {
+
+  // For responsive design - change camera aspect as 
+  camera.aspect = window.innerWidth / window.innerHeight;
+
+  // Update projection engine with new aspect settings
+  camera.updateProjectionMatrix();
+
+
+  // Just like camera, update renderer to render only to size of window.
+  renderer.setSize(window.innerWidth, window.innerHeight);
+}
+
 document.addEventListener('mousemove', onDocumentMouseMove);
+window.addEventListener('resize', onWindowResize);
 // Just display the most recent meshes for now. We shall React!
 
 // TODO: Make the rest work! You're so close.
