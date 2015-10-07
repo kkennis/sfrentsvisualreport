@@ -1,6 +1,6 @@
 # SF Rents - A Visual Report
 
-This is an an experiment in D3.js and Three.js.
+This is an experiment in D3.js and Three.js.
 
 In it, I have created a 3D map of San Francisco delineated by zip code, with the third dimension (height) dictated by the zip code's ZRI (Zillow Rent Index). The ZRI is a proprietary estimation of the average rental unit in an area over all units, and serves as a general barometer for a neighborhood's rental cost (disclaimer: do not take this data to heart - this project is more about data visualizatio that data analysis). I created this map using the twin technologies of d3.js and Three.js. d3 was initially used for parsing CSV files for rental data and reading topoJSON files for geographical zip boundaries and creating SVG paths for each zip code. I then used Three.js to project these SVG paths to 3D geometries and display the results.
 
