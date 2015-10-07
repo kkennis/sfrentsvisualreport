@@ -10,8 +10,7 @@ To use my app, simply clone the repo, open up sfrents.html, and pick a month (no
 
 Some coming TODOS:
 
-- Fix extrusion geometry so smaller rents don't stick out as much
-- Fix initial SF orientation - it's currently laying on its side, and has to be dragged into a better position with the trackbal
+- Fix initial SF orientation - it's currently laying on its side, and has to be dragged into a better position with the mouse
 - Create web framework to hold the data and deploy it
 
 A screencast of the technology can be found [here](https://www.youtube.com/watch?v=wuwfU0DDcJU).
