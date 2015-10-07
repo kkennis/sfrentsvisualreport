@@ -15,3 +15,11 @@ Some coming TODOS:
 - Create web framework to hold the data and deploy it
 
 A screencast of the technology can be found [here](https://www.youtube.com/watch?v=wuwfU0DDcJU).
+
+#### Screencast Cliffs Notes
+
+1. 0:00-4:25: Top-down look at technology, motivations, background etc.
+2. 4:25-9:15: Demo
+3. 9:16-12:11: Overview of approach, d3, three
+4. 12:12-24:54: LOC. Functions. The nitty gritty (and not really necessary)
+
